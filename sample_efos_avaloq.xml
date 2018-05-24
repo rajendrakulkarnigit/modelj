@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<generator>
+	<application-information>
+		<name>SIL</name>
+		<short-name />
+		<version>1.0</version>
+		<author>Rajendra Kulkarni</author>
+		<company>HSBC</company>
+	</application-information>
+
+	<build-information>
+		<app-server />
+		<datasource />
+		<type-mapping />
+		<output-directory>C:\swdtools\modelj\generated-code</output-directory>
+		<package>com.hsbc.gpb.sil.message</package>
+		<module>product</module>
+	</build-information>
+	<!-- Below section will be copy pasted after running the run.bat The output 
+		of run will be pasted here -->
+	<bean>
+		<name>accountBalance</name>
+		<className>AccountBalance</className>
+		<description>accountbalance</description>
+		<attribute>
+			<name>accountBalanceId</name>
+			<title>accountBalanceId</title>
+			<type>Integer</type>
+			<width>10</width>
+			<htmlType>text</htmlType>
+		</attribute>
+	</bean>
+</generator>

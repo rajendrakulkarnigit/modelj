@@ -1,0 +1,67 @@
+<generator>
+	<application-information>
+		<name>election</name>
+		<short-name></short-name>
+		<version>1.0</version>
+		<author>Rajendra Kulkarni</author>
+		<company>Trading</company>
+	</application-information>
+	<build-information>
+		<app-server>ApacheTomcat</app-server>
+		<datasource>MySqlDS</datasource>
+		<type-mapping>MySql</type-mapping>
+		<output-directory>E:\ecorporation\modelj-0.69-bin\generated-code
+		</output-directory>
+		<package>com.trade.stockmaster</package>
+		<module>stockmaster</module>
+	</build-information>
+
+	<bean>
+		<name>stockMaster</name>
+		<className>StockMaster</className>
+		<description>Stock Master</description>
+		<attribute>
+			<primary-key>yes</primary-key>
+			<name>stockId</name>
+			<title>StockId</title>
+			<type>Integer</type>
+			<width>15</width>
+			<htmlType>text</htmlType>
+		</attribute>
+		<attribute>
+			<name>stockName</name>
+			<title>StockName</title>
+			<type>String</type>
+			<width>1024</width>
+			<htmlType>text</htmlType>
+		</attribute>
+		<attribute>
+			<name>NSE</name>
+			<title>NSE</title>
+			<type>String</type>
+			<width>30</width>
+			<htmlType>text</htmlType>
+		</attribute>
+		<attribute>
+			<name>ICHARTS</name>
+			<title>ICHARTS</title>
+			<type>String</type>
+			<width>30</width>
+			<htmlType>text</htmlType>
+		</attribute>
+		<attribute>
+			<name>YAHOO</name>
+			<title>YAHOO</title>
+			<type>String</type>
+			<width>30</width>
+			<htmlType>text</htmlType>
+		</attribute>
+		<attribute>
+			<name>ICICI</name>
+			<title>ICICI</title>
+			<type>String</type>
+			<width>30</width>
+			<htmlType>text</htmlType>
+		</attribute>
+	</bean>
+</generator>

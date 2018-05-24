@@ -1,0 +1,99 @@
+<project name="CodeGenerator" default="main" basedir=".">
+
+  <property name="lib.dir" value="lib"/>
+  <property name="layout.path" value="layout"/>
+  <property name="output.path" value="generated-code"/>
+  <property name="template.path" value="templates_efos_avaloq"/>
+
+<!-- uncomment this line to use the jikes java compiler -->
+<!--  <property name="build.compiler" value="jikes"/> -->
+
+  <!--
+    Build the classpath. 
+  -->
+  <path id="lib-classpath">
+    <fileset dir="${lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+
+  <taskdef  name="generator" 
+		classpathref="lib-classpath"
+		classname="com.tomtessier.applications.generator.GeneratorTask"/>
+
+
+  <!-- ================================================================ -->
+  <!-- Copy the layout to the destination                               -->
+  <!-- ================================================================ -->
+
+  <target name="copyLayout">
+    <delete dir="${output.path}"/>
+
+    <copy todir="${output.path}" overwrite="true">
+      <fileset dir="${layout.path}">
+        <include name="**" />
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- ================================================================ -->
+  <!-- Generate Java Components + Struts Web files                      -->
+  <!-- ================================================================ -->
+  <!-- This target generates the components specs                       -->
+  <!-- and also creates Struts Action and JSP classes                   -->
+  <!-- ================================================================ -->
+
+  <target name="generateSource">
+
+    <echo message="+------------------------------------------+"/>
+    <echo message="|                                          |"/>
+    <echo message="| Generating Java + Web files!             |"/>
+    <echo message="|                                          |"/>
+    <echo message="+------------------------------------------+"/>
+
+    <generator
+      xmlFile="${modelj-xml-filename}"
+      controlTemplate="Control.vm"
+      outputDirectory="${output.path}"
+      templatePath="${template.path}"
+      outputFile="generation.report"
+    />
+
+  </target>
+
+  <!-- ================================================================ -->
+  <!-- Generate appserver-specific XML descriptors                      -->
+  <!-- ================================================================ -->
+  <!-- This target will generate the deployment descriptors             -->
+  <!-- necessary for the chosen application server                      -->
+  <!-- ================================================================ -->
+
+  <target name="genDescriptors">
+
+    <echo message="+------------------------------------------+"/>
+    <echo message="|                                          |"/>
+    <echo message="| Generating deployment descriptors!       |"/>
+    <echo message="|                                          |"/>
+    <echo message="+------------------------------------------+"/>
+
+    <generator
+      xmlFile="${modelj-xml-filename}"
+      controlTemplate="src/ejb/META-INF/Control.vm"
+      outputDirectory="${output.path}"
+      templatePath="${template.path}"
+      outputFile="generation.report"
+    />
+
+  </target>
+
+
+  <!-- ================================================================ -->
+  <!-- Generate all                                                     -->
+  <!-- ================================================================ -->
+  <!-- This target will generate everything                             -->
+  <!-- ================================================================ -->
+
+  <target name="main" depends="copyLayout, generateSource"/>
+
+</project>

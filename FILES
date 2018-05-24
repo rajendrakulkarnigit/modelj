@@ -1,0 +1,12 @@
+layout\			- static code files 
+lib\			- libary files used by the code generator
+templates\		- templates for the generated code files
+
+build.xml 		- ant build script used by the binary version of the code generator
+CHANGELOG		- the change log
+FILES			- this file
+LICENSE			- the GNU/GPL license
+README			- release notes
+run.bat			- runs the binary version of the code generator (dos/windows batch file)
+run.sh			- runs the binary version of the code generator (unix shell script)
+sample.xml		- the ModelJ XML data file used to generate a J2EE code sample

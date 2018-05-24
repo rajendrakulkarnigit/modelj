@@ -1,0 +1,12 @@
+				ModelJ readme
+
+You must have ant version 1.5 installed to use ModelJ. Execute the generator upon the sample xml file with the command:
+
+run sample.xml
+
+To build the generated code, change to the generated-code directory and run ant. The JBoss deployment file (.EAR) will be placed in generated-code\build.
+
+
+-------------------------------------------------------------------------
+
+Refer to FILES for a detailed description of the files included with this release.

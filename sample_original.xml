@@ -1,0 +1,54 @@
+<generator>
+  <application-information>
+    <name>Global Credit Module</name>
+    <short-name>GCM</short-name>
+    <version>1.0</version>
+    <author>Rajendra Kulkarni</author>
+    <company>HSBC</company>
+  </application-information>
+  <build-information>
+    <app-server>jboss</app-server>
+    <datasource></datasource>
+    <type-mapping></type-mapping>
+    <output-directory>c:\temp\gcm</output-directory>
+    <package>com.hsbc.gpb.credit.proposal</package>
+  </build-information>
+  <bean>
+    <name>Role</name>
+    <description>The attributes identified with a role</description>
+    <attribute>
+      <primary-key>yes</primary-key>
+      <name>id</name>
+      <title>Role Id</title>
+      <type>integer</type>
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <title>Role Name</title>
+      <type>string</type>
+    </attribute>
+  </bean>
+
+  <!-- Note: never define many-to-one relationships, use one-to-many relationships instead -->
+  <relationship>
+    <parent-bean-name>User</parent-bean-name>
+    <parent-multiplicity>One</parent-multiplicity>
+    <child-bean-name>UserInfo</child-bean-name>
+    <child-multiplicity>One</child-multiplicity>
+    <navigation>bidirectional</navigation>
+  </relationship>
+  <relationship>
+    <parent-bean-name>Role</parent-bean-name>
+    <parent-multiplicity>Many</parent-multiplicity>
+    <child-bean-name>User</child-bean-name>
+    <child-multiplicity>Many</child-multiplicity>
+    <navigation>bidirectional</navigation>
+  </relationship>
+  <relationship>
+    <parent-bean-name>User</parent-bean-name>
+    <parent-multiplicity>One</parent-multiplicity>
+    <child-bean-name>PurchaseOrder</child-bean-name>
+    <child-multiplicity>Many</child-multiplicity>
+    <navigation>unidirectional</navigation>
+  </relationship>
+</generator>

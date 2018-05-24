@@ -1,0 +1,13 @@
+Known bugs: 
+
+- actions of child beans in many-to-many relationships will always forward to the parent page when cancelled.
+
+eg) when a role is selected for add existing role to user, and then click cancel, get a blank screen.
+
+---------------------------------------------------------------------
+
+Known issues: 
+
+- several warnings are displayed in velocity.log upon compilation. Harmless but annoying. Fix in a later release.
+
+- only integer and string EJB attribute types are presently implemented

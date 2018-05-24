@@ -1,0 +1,13 @@
+0.69 - removed grandfathered .tld entries from web.xml that caused a failure on newer JBoss containers.
+
+0.68 - port to Struts 1.1-RC1, Velocity 1.3.1-rc2. The port to Struts 1.1-RC1 fixes a bug that prevented the generated application from running under a JVM 1.4 implementation.
+
+0.67 - Fixed web-tier many-to-many relationship bug: a child in a many-to-many relationship was not forwarding to the correct page upon addition of an existing parent or a new parent
+
+0.66 - Fixed ejb-tier bug that caused multi-cased bean names to fail in a many-to-many relationship (eg: a bean named UserName versus Username would fail when placed in a many-to-many)
+
+0.65 - added license file, and GPL copyright notice to all files.
+
+0.60 - implementation of many-to-many management via the web tier.
+
+0.50 - initial code base. Generates all available types of EJBs, and uses JBoss-QL to order the entities as displayed upon the web tier. Includes support for one-to-one and one-to-many relationship management from the web tier. 
