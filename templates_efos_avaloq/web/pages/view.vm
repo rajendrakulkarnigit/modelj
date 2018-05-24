@@ -1,0 +1,42 @@
+<%@include file="/pages/includes/taglib.jsp"%>
+
+<head>
+	<%@include file="/pages/includes/scriptsAndCss.jsp"%>
+
+</head>
+
+<body>
+<%@include file="/pages/${module}/${bean.className}Menu.jsp" %>
+
+<h2><bean:message bundle="${module}" key="${module.toUpperCase()}.view${bean.name}.PageTitle"/></h2>
+
+<html:form action="/showUpdate${bean.className}.do?webaction=showUpdate">
+
+<table class="grid" align="center">
+	#foreach($attribute in $bean.attribute)
+	#if($attribute.primaryKey)
+	<input type="hidden" name="$attribute.name" value="<bean:write name='${bean.name}Form' property='${attribute.name}'/>" />
+	#end	
+
+	<tr>
+		<td width="30%" class="text">
+			<bean:message bundle="${module}" key="${module.toUpperCase()}.${bean.name}Form.${attribute.name}"/>
+		</td>
+		<td width="70%">
+			<bean:write name="${bean.name}Form" property="${attribute.name}"/>
+		</td>
+	</tr>
+	#end
+			
+	<tr>
+		<td align="center" colspan="2">
+			<html:submit><bean:message bundle="${module}" key="${module.toUpperCase()}.view${bean.name}.UpdateButton"/></html:submit>
+		</td>		
+		<td nowrap align="center" colspan="2">		
+			<input type="button" class="btngrey" value='<bean:message bundle="${module}" key="${module.toUpperCase()}.view${bean.name}.CancelButton"/>' />
+		</td>
+	</tr>
+</table>
+</html:form>
+</body>
+

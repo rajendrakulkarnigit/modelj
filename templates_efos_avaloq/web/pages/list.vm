@@ -1,0 +1,104 @@
+<%@include file="/pages/includes/taglib.jsp"%>
+
+<%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
+
+<html:html>
+
+<head>
+	<%@include file="/pages/includes/scriptsAndCss.jsp"%>
+
+	<script type="text/javascript">
+		<!--
+		function submitForm(action)
+		{
+			if(action == 'search') {
+				alert(action);
+				document.forms[0].action = "<%=request.getContextPath()%>/search${bean.className}.do?webaction=search";
+			}
+			else if(action == 'add') {
+				alert(action);
+				document.forms[0].action = "<%=request.getContextPath()%>/showAdd${bean.className}.do?webaction=showAdd";
+			}
+			else if(action == 'delete') {
+				alert(action);
+				document.forms[0].action = "<%=request.getContextPath()%>/delete${bean.className}.do?webaction=delete";
+			}
+		
+			document.forms[0].submit();
+		}
+		//-->
+</script>
+</head>
+
+<body>
+<%@include file="/pages/${module}/${bean.className}Menu.jsp" %>
+
+<h2>${module}</h2>
+	
+<html:form action="/list${bean.className}.do?webaction=list">
+						
+	<table class="grid">
+		#foreach ($attribute in $bean.attribute)
+		<tr>
+			<td width="30%">
+				<bean:message bundle="${module}" key="${module.toUpperCase()}.${bean.name}Form.${attribute.name}"/>	 
+			</td>
+			<td width="70%">
+				<html:text property="${attribute.name}"></html:text>
+			</td>
+		</tr>
+		#end
+		
+		<tr>
+			<td>
+				<input type="button" name="Search" value='<bean:message bundle="${module}" key="${module.toUpperCase()}.${bean.name}Form.SearchButton"/>' onclick="submitForm('search');" />
+			</td>
+		</tr>
+	</table>
+
+	<table>
+		<tr>
+			<td>
+				<input type="button"
+					name="Delete"  
+					value='<bean:message bundle="${module}" 
+					key="${module.toUpperCase()}.${bean.name}Form.DeleteButton"/>' 
+					onclick="submitForm('delete');" value="" />
+			</td>
+			<td align="right">
+				<input type="button"
+					name="Add New"
+					value='<bean:message bundle="${module}" 
+					key="${module.toUpperCase()}.${bean.name}Form.AddNewButton"/>' 
+					onclick="submitForm('add');" value="" />
+			</td>
+		</tr>
+	</table>
+
+	<display:table name="${bean.name}Form.${bean.name}List" id="${bean.name}" pagesize="10" requestURI="/list${bean.className}.do?webaction=list" style="width:100%; border:1; cellpadding:2; cellspacing:1; bgcolor:#FFFFFF">
+#foreach ($attribute in $bean.attribute)
+#if($attribute.primaryKey)
+		<display:column title="Select">
+			<input id="${attribute.name}s<bean:write name='${bean.name}' property='${attribute.name}'/>" type="checkbox" name="${attribute.name}s" value="<bean:write name='${bean.name}' property='${attribute.name}'/>">
+		</display:column>
+		<display:column title="$attribute.title" sortable="true">
+			<a href="<%=request.getContextPath()%>/view${bean.className}.do?webaction=view&${attribute.name}=<bean:write name='${bean.name}' property='${attribute.name}'/>">
+				<bean:write name="${bean.name}" property="${attribute.name}"/>
+			</a>
+		</display:column>
+#end
+#if(!$attribute.primaryKey)
+		<display:column title="$attribute.title" sortable="true">
+			<a href="<%=request.getContextPath()%>/view${bean.className}.do?webaction=view&${bean.name}Id=<bean:write name="${bean.name}" property="${bean.name}Id"/>">
+				<bean:write name="${bean.name}" property="${attribute.name}"/>
+			</a>
+		</display:column>
+#end
+#end
+	</display:table>
+
+</html:form>
+
+</body>
+
+</html:html>

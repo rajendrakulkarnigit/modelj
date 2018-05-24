@@ -1,0 +1,25 @@
+package ${package}.dao;
+
+import java.sql.SQLException;
+import java.util.*;
+import com.maa.core.exception.BusinessException;
+import ${package}.model.${bean.className}Model;
+
+/**
+ * DAO Interface for the $bean.className. 
+ */
+public interface ${bean.className}DAO {
+
+    public void add (${bean.className}Model model) throws BusinessException;
+	
+    public void update (${bean.className}Model model) throws BusinessException;
+    
+    public void delete(String[] ${bean.name}Ids)  throws BusinessException;
+    
+    public List findAll() throws BusinessException;
+    
+    public ${bean.className}Model findByPrimaryKey(Integer id) throws BusinessException;
+    
+    public List findByPropertyValues (${bean.className}Model ${bean.name}Model) throws BusinessException;
+    
+} // end $strings.capitalizeFirstLetter(${bean.className})DAO

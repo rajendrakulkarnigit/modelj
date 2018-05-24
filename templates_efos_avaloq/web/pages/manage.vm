@@ -1,0 +1,91 @@
+<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+
+    <html:form method="post" action="/${bean.name.toLowerCase()}/save">
+     <html:hidden property="updateMode"/>
+
+#foreach ($relationship in $root.relationship)
+#if ($relationship.childBeanName == $bean.name && $strings.capitalizeFirstLetter($relationship.childMultiplicity) == 'Many')
+     <%-- the id of the ${relationship.parentBeanName} that contains this ${bean.name} --%>
+     <html:hidden property="${relationship.parentBeanName.toLowerCase()}Id"/>
+#elseif ($relationship.parentBeanName == $bean.name && $strings.capitalizeFirstLetter($relationship.parentMultiplicity) == 'Many')
+     <%-- the id of the ${relationship.childBeanName} that contains this ${bean.name} --%>
+     <html:hidden property="${relationship.childBeanName.toLowerCase()}Id"/>
+#end
+#end
+
+	<table width="100%" border="0" cellpadding="0" class="bodyText">
+        <tr> 
+          <td valign="bottom">
+		<span class="bodyHead1">
+		    <logic:notEqual name="${bean.name}Form" 
+				     property="updateMode" scope="request" value="TRUE">
+		      Add
+		    </logic:notEqual>
+		    <logic:equal name="${bean.name}Form" 
+				     property="updateMode" scope="request" value="TRUE">
+		      Update
+
+			<%--  in update mode, need the id as a hidden parameter, so that
+				we know what object we are updating --%>
+		     <html:hidden property="id"/>
+
+		    </logic:equal>
+			${bean.name}
+		</span>
+	    </td>
+        </tr>
+#foreach ($attribute in $bean.attribute)
+#if (!$attribute.primaryKey)
+        <tr> 
+          <td nowrap valign="top"> 
+            <b>${attribute.title}</b>
+	    </td>
+	    <td>
+		<html:text property="${attribute.name}" size="30" maxlength="50"/>
+	    </td>
+	  </tr>
+#end
+#end
+
+## include one-to-one relationships on the form
+#foreach ($relationship in $root.relationship)
+#if ($relationship.parentBeanName == $bean.name && $strings.capitalizeFirstLetter($relationship.childMultiplicity) == 'One')
+#foreach ($relBean in $root.bean)
+#if ($relBean.name == $relationship.childBeanName)
+#foreach ($attribute in $relBean.attribute)
+#if (!$attribute.primaryKey)
+      <%-- fields for the $relationship.childBeanName one-to-one relationship --%>
+        <tr> 
+          <td nowrap valign="top"> 
+            <b>${attribute.title}</b>
+	    </td>
+	    <td>
+		<html:text property="${attribute.name}" size="30" maxlength="50"/>
+	    </td>
+	  </tr>
+#end
+#end
+#end
+#end
+#end
+#end
+
+
+	<tr>
+	 <td>
+
+	      <html:submit>
+	        Save 
+	      </html:submit>
+	      <html:cancel>
+	        Cancel
+	      </html:cancel>
+
+	  </td>
+	 </tr>
+
+      </table>
+
+    </html:form>

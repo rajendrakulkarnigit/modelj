@@ -1,0 +1,71 @@
+<%@include file="/pages/includes/taglib.jsp"%>
+
+<head>
+	<%@include file="/pages/includes/scriptsAndCss.jsp"%>
+	<script type="text/javascript">
+	function submitForm()
+	{
+		
+		<%if(request.getAttribute("addUpdateFlag").equals("add")){ %>
+			document.forms[0].action = "<%=request.getContextPath()%>/saveAdd${bean.className}.do?webaction=saveAdd";
+			alert("add"); 
+		<%}
+		else if(request.getAttribute("addUpdateFlag").equals("update"))
+		{%>
+			document.forms[0].action="<%=request.getContextPath()%>/saveUpdate${bean.className}.do?webaction=saveUpdate"
+				alert("update");
+		<%} %>
+		document.forms[0].submit();
+	}
+	</script>
+
+</head>
+
+
+<h2> '${module}' update page</h2>
+<body>
+
+<%@include file="/pages/${module}/${bean.className}Menu.jsp" %>
+
+<h2><bean:message bundle="${module}" key="${module.toUpperCase()}.update${bean.name}.PageTitle"/></h2>
+
+<html:form action="/saveAdd${bean.className}.do?webaction=saveAdd">
+
+<table class="grid" align="center">
+	#set($colCounter = 0)
+	#foreach($attribute in $bean.attribute)
+	#if($attribute.primaryKey)
+	<input type="hidden" name="${attribute.name}" value="<bean:write name='${bean.name}Form' property='${attribute.name}'/>" />
+	#end	
+
+	#if($colCounter == 0)
+	<tr>
+	#end
+		<td>
+			<bean:message bundle="${module}" key="${module.toUpperCase()}.${bean.name}Form.${attribute.name}"/>
+		</td>
+		<td>
+			<html:text property="${attribute.name}" styleClass="textbox1"></html:text>
+		</td>
+	#if($colCounter == 0)
+	</tr>
+	#end
+	
+	#if($colCounter == 3)
+	#set($colCounter = 0)
+	#end
+	#end
+			
+	<tr>
+		<td nowrap align="center" colspan="3">
+			<input onclick="submitForm();" type="button" class="btngrey" value='<bean:message bundle="${module}" key="${module.toUpperCase()}.showAdd${bean.name}.addButton"/>' />
+		</td>		
+		<td nowrap align="center" colspan="3">		
+			<input type="button" class="btngrey" value='<bean:message bundle="${module}" key="${module.toUpperCase()}.update${bean.name}.CancelButton"/>' />
+		</td>
+	</tr>
+</table>
+
+</html:form>
+
+</body>

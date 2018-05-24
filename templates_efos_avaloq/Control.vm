@@ -1,0 +1,76 @@
+#*
+ * this file serves as the control template for the J2EE generator.
+ *#
+
+#set ( $webPath = "web" )
+#set ( $srcPath = "src" )
+#set ( $basePath = "$srcPath/${module.toUpperCase()}/${package}/${module}" )
+
+#foreach ($bean in $root.bean)
+
+    ## set the pat variables and create the output directories
+    #set ( $modelPath = "${basePath}/model" )
+    #set ( $daoPath = "${basePath}/dao" )
+    #set ( $servicePath = "${basePath}/service" )
+    #set ( $strutsPath = "${basePath}/web/struts" )
+    #set ( $jspPath = "${webPath}/pages/${module}" )
+
+    $files.mkdir("$outputDirectory/$basePath")
+    $files.mkdir("$outputDirectory/$modelPath")
+    $files.mkdir("$outputDirectory/$daoPath")
+    $files.mkdir("$outputDirectory/$servicePath")
+    $files.mkdir("$outputDirectory/$strutsPath")
+    $files.mkdir("$outputDirectory/$strutsPath/action")
+    $files.mkdir("$outputDirectory/$strutsPath/form")
+    $files.mkdir("$outputDirectory/$strutsPath/message")
+    $files.mkdir("$outputDirectory/$jspPath")
+
+    ## create the DAO
+    $generator.parse("src/dao/DAO.vm", "${daoPath}/${bean.className}DAO.java", "bean", $bean)
+    $generator.parse("src/dao/DAOImpl.vm", "${daoPath}/${bean.className}DAOImpl.java", "bean", $bean)
+
+    ## create the Model
+    $generator.parse("src/model/Model.vm", "${modelPath}/${bean.className}Model.java", "bean", $bean)
+    $generator.parse("src/model/Hibernate.vm", "${modelPath}/${bean.className}.hbm.xml", "bean", $bean)
+    
+    ## create the Service
+    $generator.parse("src/service/Service.vm", "${servicePath}/${bean.className}Service.java", "bean", $bean)
+    $generator.parse("src/service/ServiceImpl.vm", "${servicePath}/${bean.className}ServiceImpl.java", "bean", $bean)
+
+    ## create the Struts Actions, Forms & Message
+    $generator.parse("src/struts/action/Action.vm", "${strutsPath}/action/${bean.className}Action.java", "bean", $bean)
+    $generator.parse("src/struts/form/Form.vm", "${strutsPath}/form/${bean.className}Form.java", "bean", $bean)
+    $generator.parse("src/struts/message/Message.vm", "${strutsPath}/message/MessageResources.properties", "bean", $bean)
+    $generator.parse("src/struts/message/Message_hi.vm", "${strutsPath}/message/MessageResources_hi.properties", "bean", $bean)
+    $generator.parse("src/struts/message/Message_en_US.vm", "${strutsPath}/message/MessageResources_en_US.properties", "bean", $bean)
+
+    ## create the JSPs
+    $generator.parse("web/pages/list.vm", "${jspPath}/${bean.className}List.jsp", "bean", $bean)
+    $generator.parse("web/pages/view.vm", "${jspPath}/${bean.className}View.jsp", "bean", $bean)
+    $generator.parse("web/pages/addUpdate.vm", "${jspPath}/${bean.className}AddUpdate.jsp", "bean", $bean)
+       
+    ## create the Menu & Dashboard
+    $generator.parse("web/pages/dashboard.vm", "${jspPath}/${bean.className}Dashboard.jsp", "bean", $bean)
+    $generator.parse("web/pages/menu.vm", "${jspPath}/${bean.className}Menu.jsp", "bean", $bean)   
+
+	
+    ## only need to create the addExisting.jsp if this bean is part of a many-to-many relationship
+    #foreach ($relationship in $root.relationship)
+    #set ($done=0)
+    #if (($relationship.parentBeanName == $bean.name || $relationship.childBeanName == $bean.name) && ($relationship.childMultiplicity.toLowerCase() == 'many' && $relationship.parentMultiplicity.toLowerCase() == 'many'))
+    #if ($done==0)
+    $generator.parse("web/pages/addExisting.vm", "${jspPath}/Add${bean.className}.jsp", "bean", $bean)
+    #set ($done=1)
+    #end
+    #end
+    #end
+#end
+
+## generate the struts-config-module.xml file
+$generator.parse("web/WEB-INF/struts-config.vm", "$webPath/WEB-INF/struts-config-${module}.xml", "beans", $root.bean)
+
+## generate the action-servlet-module.xml file
+$generator.parse("web/WEB-INF/action-servlet.vm", "$webPath/WEB-INF/action-servlet-${module}.xml", "beans", $root.bean)
+
+## generate the action-servlet-module.xml file
+$generator.parse("web/WEB-INF/application-context.vm", "$webPath/WEB-INF/application-context-${module}.xml", "beans", $root.bean)

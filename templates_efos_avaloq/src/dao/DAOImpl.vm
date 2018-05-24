@@ -1,0 +1,104 @@
+package ${package}.dao;
+
+import java.util.*;
+import java.sql.SQLException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import com.maa.core.log.BaseLogger;
+import com.maa.core.exception.BusinessException;
+import com.maa.core.log.BaseLogger;
+import ${package}.model.${bean.className}Model;
+
+/**
+ * DAO Interface for the $bean.name. 
+ */
+public class ${bean.className}DAOImpl extends HibernateDaoSupport implements ${bean.className}DAO {
+
+    private static final BaseLogger log = BaseLogger.getInstance(${bean.className}DAOImpl.class);
+    
+    private Connection conn;
+    
+    public Connection getConnection() {
+        conn = this.getSession().connection();
+        return conn;
+    }
+    
+    public void add (${bean.className}Model model) throws BusinessException {
+		getHibernateTemplate().save(model);
+		log.debug("save successful");
+    }
+
+    public void update (${bean.className}Model model) throws BusinessException {
+        getHibernateTemplate().update(model);
+    }
+
+    public void delete(Integer id) throws BusinessException {
+		getHibernateTemplate().delete(id);
+    }
+
+    public void delete(String[] ${bean.name}Ids) throws BusinessException {
+	
+		Connection conn = getConnection();
+		String ${bean.name}List ="";
+		for(String ${bean.name}:${bean.name}Ids) {
+			${bean.name}List+=${bean.name}+",";
+		}
+	
+		${bean.name}List = ${bean.name}List.substring(0, ${bean.name}List.lastIndexOf(','));
+	
+		String query = null;
+	
+		try {
+			Statement smt = conn.createStatement();
+		
+		#foreach ($attribute in $bean.attribute)
+		#if(${attribute.primaryKey})
+			query="update ${bean.classname} set deleteFlag = 't' "
+			 + " where ${attribute.name} in (" + ${bean.name}List + ");";
+		#end
+		#end
+			System.out.println("delete Query = "+query);
+			smt.executeUpdate(query);
+			smt.close();
+			conn.close();
+		} 
+		catch (SQLException sqe) {
+			log.error(sqe.toString(), sqe.getCause());
+			throw new BusinessException("error text", sqe);
+    	}
+		catch(Exception e){
+			log.error(e.getMessage(), e);
+		}    	
+    }
+
+    public ${bean.className}Model findByPrimaryKey(Integer id) throws BusinessException {
+		return (${bean.className}Model) getHibernateTemplate().get("${package}.model.${bean.className}Model", id);
+    }
+
+    public List findByPropertyValues (${bean.className}Model model) throws BusinessException {
+		// model.setDeleteFlag("f");
+		return getHibernateTemplate().findByExample(model);
+    }
+
+    public List findByProperty(String propertyName, Object value) throws BusinessException {
+		String queryString = " from ${bean.className}Model as ${bean.className}Model "
+			+ " where ${bean.className}Model." + propertyName + "= ?";
+		return getHibernateTemplate().find(queryString, value);
+    }
+
+    public List findAll() throws BusinessException {
+		String queryString = " from ${bean.className}Model as ${bean.className}Model ";
+		return getHibernateTemplate().find(queryString);
+    }
+} // end ${bean.className}DAO

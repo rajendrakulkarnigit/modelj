@@ -1,0 +1,42 @@
+<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+
+	<table width="100%" border="0" cellpadding="0" class="bodyText">
+        <tr> 
+          <td valign="bottom">
+		<span class="bodyHead1">
+			Confirm deletion of this ${bean.name}:
+		</span>
+	    </td>
+        </tr>
+
+	<%@ include file="singleItem.jsp"%>
+
+	<tr>
+	 <td>
+
+	    <html:form method="post" action="/${bean.name.toLowerCase()}/delete">
+
+	      <html:hidden property="id"/>
+
+#foreach ($relationship in $root.relationship)
+#if ($relationship.childBeanName == $bean.name && $strings.capitalizeFirstLetter($relationship.childMultiplicity) == 'Many')
+         <%-- the id of the ${relationship.parentBeanName} that contains this ${bean.name} --%>
+         <html:hidden property="${relationship.parentBeanName.toLowerCase()}Id"/>
+#end
+#end
+
+	      <html:submit>
+	        Delete
+	      </html:submit>
+	      <html:cancel>
+	        Cancel
+	      </html:cancel>
+
+	    </html:form>
+
+	  </td>
+	 </tr>
+
+      </table>

@@ -1,0 +1,25 @@
+#Message Properties for $bean.name Form bean
+#foreach ($attribute in $bean.attribute)
+${module.toUpperCase()}.$strings.capitalizeFirstLetter(${bean.className})Form.$attribute.name=$strings.capitalizeFirstLetter($attribute.name) (Hindi)
+#end
+${module.toUpperCase()}.$strings.capitalizeFirstLetter(${bean.className})Menu.PageTitle = $strings.capitalizeFirstLetter(${bean.className})
+${module.toUpperCase()}.showAdd$strings.capitalizeFirstLetter(${bean.className}).PageTitle = Show Add$strings.capitalizeFirstLetter(${bean.className})
+${module.toUpperCase()}.showAdd$strings.capitalizeFirstLetter(${bean.className}).addButton = Add $strings.capitalizeFirstLetter(${bean.className})
+${module.toUpperCase()}.showAdd$strings.capitalizeFirstLetter(${bean.className}).CancelButton = Cancel
+${module.toUpperCase()}.update$strings.capitalizeFirstLetter(${bean.className}).PageTitle = Update $strings.capitalizeFirstLetter(${bean.className})
+${module.toUpperCase()}.update$strings.capitalizeFirstLetter(${bean.className}).addButton = Update $strings.capitalizeFirstLetter(${bean.className})
+${module.toUpperCase()}.update$strings.capitalizeFirstLetter(${bean.className}).CancelButton = Cancel
+${module.toUpperCase()}.$strings.capitalizeFirstLetter(${bean.className})Menu.HomeLink = Home
+${module.toUpperCase()}.$strings.capitalizeFirstLetter(${bean.className})Menu.DashBoardLink = Dashboard
+${module.toUpperCase()}.$strings.capitalizeFirstLetter(${bean.className})Menu.SearchLink = Search
+${module.toUpperCase()}.$strings.capitalizeFirstLetter(${bean.className})Menu.ReportLink = Reports
+${module.toUpperCase()}.$strings.capitalizeFirstLetter(${bean.className})Menu.HelpLink = Help
+${module.toUpperCase()}.$strings.capitalizeFirstLetter(${bean.className})Form.SearchButton = Search
+${module.toUpperCase()}.$strings.capitalizeFirstLetter(${bean.className})Form.DeleteButton = Delete
+${module.toUpperCase()}.$strings.capitalizeFirstLetter(${bean.className})Form.AddNewButton = Add $strings.capitalizeFirstLetter(${bean.className})
+${module.toUpperCase()}.update$strings.capitalizeFirstLetter(${bean.className}).PageTitle = Update $strings.capitalizeFirstLetter(${bean.className})
+${module.toUpperCase()}.update$strings.capitalizeFirstLetter(${bean.className}).addButton = Update $strings.capitalizeFirstLetter(${bean.className})
+${module.toUpperCase()}.update$strings.capitalizeFirstLetter(${bean.className}).CancelButton = Cancel
+${module.toUpperCase()}.view$strings.capitalizeFirstLetter(${bean.className}).PageTitle = View $strings.capitalizeFirstLetter(${bean.className})
+${module.toUpperCase()}.view$strings.capitalizeFirstLetter(${bean.className}).CancelButton = Cancel
+${module.toUpperCase()}.view$strings.capitalizeFirstLetter(${bean.className}).UpdateButton = Update $strings.capitalizeFirstLetter(${bean.className})

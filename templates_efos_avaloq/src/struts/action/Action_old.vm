@@ -1,0 +1,284 @@
+//---------------------------------------------------------
+// Application: $application.name
+// Author     : $application.author
+//
+// Copyright © $year $application.company
+//---------------------------------------------------------
+
+package ${package}.struts.${bean.name.toLowerCase()};
+
+import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
+import roseindia.services.ServiceFinder;
+
+import com.maa.core.web.struts.action.BaseDispatchAction;
+import com.maa.ecorporation.citizen.model.$bean.nameVO;
+import com.maa.ecorporation.citizen.service.$bean.nameService;
+import com.maa.ecorporation.citizen.web.struts.form.$bean.nameForm;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.locale.converters.DateLocaleConverter;
+
+/**
+  * subclass of BaseAction that performs the various actions specific to a Address. 
+  * 
+  * @author $application.author
+  * @version $application.version
+  */
+public class ${bean.name}Action extends BaseDispatchAction {
+    private ${bean.name}Service service;	
+
+	public ActionForward showAdd(
+		ActionMapping mapping,
+		ActionForm form,
+		HttpServletRequest request,
+		HttpServletResponse response)
+		throws Exception
+	{
+		HttpSession session = request.getSession();
+
+		ActionErrors errors = new ActionErrors();
+		ActionErrors errors1 = null;
+
+		$strings.capitalizeFirstLetter(${bean.name})Form ${bean.name.toLowerCase()}Form = (${bean.name})Form form;
+
+		try
+		{
+			${bean.name}Service service = (${bean.name}Service) ServiceFinder
+				.getContext(request).getBean("${bean.nameService}");
+		}
+		catch (OneException e)
+		{
+			errors.add(e.getErrorCode(), new ActionError(e.getErrorCode(), e.getCause().getMessage()));
+			saveErrors(request, errors);
+			return mapping.findForward(getForwardStrForSource(gForm.getSourcePage()));
+		}
+		catch (Exception e)
+		{
+			errors.add(GeneralExceptionConstants.ERROR_COMMON, new ActionError(GeneralExceptionConstants.ERROR_COMMON));
+			saveErrors(request, errors);
+			session.removeAttribute("errors");
+			return mapping.findForward(getForwardStrForSource(gForm.getSourcePage()));
+		}
+
+		return mapping.findForward("ADD_${bean.name.toUpperCase()}");
+	}
+
+  /**
+    * populates the ActionForm with values, for use by the View and Confirm Delete pages
+    */
+  public void prepareForm(ActionMapping mapping,
+				          ActionForm actionForm,
+                          HttpServletRequest request,
+                          HttpServletResponse response) throws Exception {
+
+    Integer id = form.getId();
+    String passedId = request.getParameter("${bean.name.toLowerCase()}Id");
+    try {
+            id = new Integer(passedId);
+    } catch (NumberFormatException e) { 
+    
+    }
+
+    form.populateWithModel(delegate.findById(id));
+    form.setUpdateMode("TRUE");
+
+  } // end prepareForm()
+
+
+  /**
+    * performs the View, populating the request with any collections this item holds
+    */
+  public void view(ActionMapping mapping,
+		        		  ActionForm actionForm,
+                          HttpServletRequest request,
+                          HttpServletResponse response) throws Exception {
+
+     prepareForm(mapping, actionForm, request, response);
+
+#set ($readiedForm=0)
+#foreach ($relationship in $root.relationship)
+#if ($relationship.parentBeanName == $bean.name && $relationship.childMultiplicity.toLowerCase() == 'many')
+#if($readiedForm==0)
+     ${bean.name}Form form = (${bean.name}Form)actionForm;
+#set ($readiedForm=1)
+#end
+     ${relationship.childBeanName}Delegate ${relationship.childBeanName.toLowerCase()}Delegate = new ${relationship.childBeanName}Delegate();
+     request.setAttribute("${relationship.childBeanName.toUpperCase()}_ITEMS", 
+					${relationship.childBeanName.toLowerCase()}Delegate.findBy${relationship.parentBeanName}(form.getId()));
+## check if the child has any parent collections associated with it
+#elseif ($relationship.childBeanName == $bean.name && $relationship.parentMultiplicity.toLowerCase() == 'many')
+#if($readiedForm==0)
+     ${bean.name}Form form = (${bean.name}Form)actionForm;
+#set ($readiedForm=1)
+#end
+     ${relationship.parentBeanName}Delegate ${relationship.parentBeanName.toLowerCase()}Delegate = new ${relationship.parentBeanName}Delegate();
+     request.setAttribute("${relationship.parentBeanName.toUpperCase()}_ITEMS", 
+					${relationship.parentBeanName.toLowerCase()}Delegate.findBy${relationship.childBeanName}(form.getId()));
+#end
+#end
+
+  } // end performView()
+
+  /**
+    * deletes the specified ${bean.name}
+    */
+  public void delete(ActionMapping mapping,
+				    ActionForm actionForm,
+                            HttpServletRequest request,
+                            HttpServletResponse response) throws Exception {
+
+	${bean.name}Delegate delegate = new ${bean.name}Delegate();
+	${bean.name}Form form = (${bean.name}Form)actionForm;
+	delegate.delete(form.getModel());
+
+  } // end Delete()
+
+  /**
+    * saves the specified ${bean.name}
+    */
+  public void add(ActionMapping mapping,
+        				  ActionForm actionForm,
+                          HttpServletRequest request,
+                          HttpServletResponse response) throws Exception {
+
+	${bean.name}Delegate delegate = new ${bean.name}Delegate();
+
+	${bean.name}Form form = (${bean.name}Form)actionForm;
+	if (form.getUpdateMode().equals("TRUE")) {
+		delegate.update(form.getModel());
+	}
+#foreach ($relationship in $root.relationship)
+#if ($relationship.childBeanName == $bean.name && $strings.capitalizeFirstLetter($relationship.childMultiplicity) == 'Many')
+#set ($relName = $strings.capitalizeFirstLetter($relationship.parentBeanName.toLowerCase()))
+      else if (form.get${relName}Id().intValue() != 0) {
+		delegate.addTo${relName}(form.get${relName}Id(), form.getModel());
+      }
+#elseif ($relationship.parentBeanName == $bean.name && $strings.capitalizeFirstLetter($relationship.parentMultiplicity) == 'Many')
+#set ($relName = $strings.capitalizeFirstLetter($relationship.childBeanName.toLowerCase()))
+      else if (form.get${relName}Id().intValue() != 0) {
+		delegate.addTo${relName}(form.get${relName}Id(), form.getModel());
+      }
+#end
+#end
+	else {
+		delegate.add(form.getModel());
+	}
+
+  } // end Save()
+
+#foreach ($relationship in $root.relationship)
+#set ($done=0)
+#if ($done == 0 && ($relationship.parentBeanName == $bean.name || $relationship.childBeanName == $bean.name) && $relationship.childMultiplicity.toLowerCase() == 'many' && $relationship.parentMultiplicity.toLowerCase() == 'many')
+  /**
+    * saves an ${bean.name} to another bean in a many-to-many relationship
+    */
+  public String SaveExisting(ActionMapping mapping,
+        				  ActionForm actionForm,
+                          HttpServletRequest request,
+                          HttpServletResponse response) throws Exception {
+
+    boolean nullId = false;
+	${bean.name}Form form = (${bean.name}Form)actionForm;
+    if (form.getId() == null || form.getId().intValue() == 0) {
+        nullId=true;
+    }
+
+	${bean.name}Delegate delegate = new ${bean.name}Delegate();
+
+    String forwardPage="";
+
+## call the delegate, finding the given ids by name (to confirm that they exist)
+## then add them via a call to the other bean's delegate... (if to use if's below
+## rather than logic to determine which bean to add to)
+
+#foreach ($relationship in $root.relationship)
+#if (($relationship.parentBeanName == $bean.name || $relationship.childBeanName == $bean.name) && $relationship.childMultiplicity.toLowerCase() == 'many' && $relationship.parentMultiplicity.toLowerCase() == 'many')
+
+## we're on the parent bean? Then we're adding a parent to a child
+#if ($relationship.parentBeanName == $bean.name)
+#set ($relName=$strings.capitalizeFirstLetter($relationship.childBeanName.toLowerCase()))
+#elseif ($relationship.childBeanName == $bean.name)
+#set ($relName=$strings.capitalizeFirstLetter($relationship.parentBeanName.toLowerCase()))
+#end
+    if (form.get${relName}Id() != null && form.get${relName}Id().intValue() != 0) {
+        // if there wasn't a null id, and the request is valid and was NOT cancelled...
+        if (!nullId && confirmRequest(mapping, form, request)) {
+            delegate.addExistingTo${relName}(
+                form.getId(), form.get${relName}Id());
+        }
+        forwardPage="view${relName}";
+    }
+#end
+#end
+
+    return forwardPage;
+
+  } // end SaveExisting()
+
+#set ($done=1)
+#end
+#end
+
+  /**
+    * lists the current ${bean.name} entries
+    *
+    * @return the forward page
+    */
+  public String list(ActionMapping mapping,
+        				    ActionForm actionForm,
+                            HttpServletRequest request,
+                            HttpServletResponse response) throws Exception {
+
+	${bean.name}Delegate delegate = new ${bean.name}Delegate();
+	request.setAttribute("${bean.name.toUpperCase()}_ITEMS", 
+					delegate.findAll());
+
+    String forwardPage="listFromMain";
+## determine whether we are viewing the list from the main menu, or from within 
+##  a parent bean
+#set ($readiedForm=0)
+#foreach ($relationship in $root.relationship)
+#if ($relationship.childBeanName == $bean.name && $relationship.childMultiplicity.toLowerCase() == 'many')
+#if($readiedForm==0)
+    ${bean.name}Form form = (${bean.name}Form)actionForm;
+#set ($readiedForm=1)
+#end
+#set ($relName = $strings.capitalizeFirstLetter($relationship.parentBeanName.toLowerCase()))
+    // check if the list was requested from within ${relName}
+    if (form.get${relName}Id() != null && form.get${relName}Id().intValue() != 0) {
+	    forwardPage="listFrom${relationship.parentBeanName}";
+    }
+#elseif ($relationship.parentBeanName == $bean.name && $relationship.parentMultiplicity.toLowerCase() == 'many')
+#if($readiedForm==0)
+    ${bean.name}Form form = (${bean.name}Form)actionForm;
+#set ($readiedForm=1)
+#end
+#set ($relName = $strings.capitalizeFirstLetter($relationship.childBeanName.toLowerCase()))
+    // check if the list was requested from within ${relName}
+    if (form.get${relName}Id() != null && form.get${relName}Id().intValue() != 0) {
+	    forwardPage="listFrom${relationship.childBeanName}";
+    }
+#end
+#end
+
+    return forwardPage;
+
+  } // end List()
+
+
+} // end of ${bean.name}Action

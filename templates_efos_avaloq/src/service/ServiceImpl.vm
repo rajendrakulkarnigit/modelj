@@ -1,0 +1,126 @@
+package ${package}.service;
+
+import java.util.List;
+import com.maa.core.exception.BusinessException;
+import com.maa.core.exception.ExceptionConstant;
+import com.maa.core.log.BaseLogger;
+
+import ${package}.dao.${bean.className}DAO;
+import ${package}.model.${bean.className}Model;
+import com.maa.core.exception.AddException;
+import com.maa.core.exception.DeleteException;
+import com.maa.core.exception.DuplicateException;
+import com.maa.core.exception.NotFoundException;
+import com.maa.core.exception.UpdateException;
+
+public class ${bean.className}ServiceImpl 
+	implements ${bean.className}Service{
+
+	private static final BaseLogger log = BaseLogger.getInstance(${bean.className}ServiceImpl.class);
+	
+	private ${bean.className}DAO ${bean.name}DAO;
+	
+	public ${bean.className}DAO get${bean.className}DAO(){
+		return ${bean.name}DAO;
+	}
+	
+	public void set${bean.className}DAO (${bean.className}DAO ${bean.name}DAO) {
+		this.${bean.name}DAO = ${bean.name}DAO; 
+	}
+
+	public void add (${bean.className}Model model) 
+		throws AddException {
+
+		try {
+			${bean.name}DAO.add(model);
+		}
+		catch (BusinessException be) {
+			log.error(be.toString(), be.getCause());
+			throw new AddException(be.getMessage(), be);
+		}
+		catch (Exception ex) {
+			log.error(ex.toString(), ex.getCause());
+			throw new AddException(ExceptionConstant.ADD_EXCEPTION, ex);
+		}		
+	}
+
+	public void update(${bean.className}Model model) 
+		throws UpdateException {
+		
+		try {
+			${bean.name}DAO.update(model);
+		}
+		catch (BusinessException be) {
+			log.error(be.toString(), be.getCause());
+			throw new UpdateException(be.getMessage(), be);
+		}
+		catch (Exception ex) {
+			log.error(ex.toString(), ex.getCause());
+			throw new UpdateException(ExceptionConstant.UPDATE_EXCEPTION, ex);
+		}	
+	}
+
+	public void delete(String[] ${bean.name}Ids) 
+		throws BusinessException, DeleteException {
+		
+		try {
+			${bean.name}DAO.delete(${bean.name}Ids);
+		}
+		catch (BusinessException be) {
+			log.error(be.toString(), be.getCause());
+			throw new BusinessException(be.getMessage(), be);
+		}
+		catch (Exception ex) {
+			log.error(ex.toString(), ex.getCause());
+			throw new DeleteException(ExceptionConstant.DELETE_EXCEPTION, ex);
+		}
+	}
+	
+	public ${bean.className}Model findByPrimaryKey(Integer id) 
+		throws NotFoundException {
+		
+		try {
+			return ${bean.name}DAO.findByPrimaryKey(id);
+		} 
+		catch (BusinessException be) {
+			log.error(be.toString(), be.getCause());
+			throw new NotFoundException(be.getMessage(), be);
+		}
+		catch (Exception ex) {
+			log.error(ex.toString(), ex.getCause());
+			throw new NotFoundException(ExceptionConstant.NOTFOUND_EXCEPTION, ex);
+		}	
+	}
+	
+	public List findByPropertyValues(${bean.className}Model model) 
+		throws BusinessException,NotFoundException {
+		
+		try {
+			return ${bean.name}DAO.findByPropertyValues(model);
+		}
+		catch (BusinessException be) {
+			log.error(be.toString(), be.getCause());
+			throw new NotFoundException(be.getMessage(), be);
+		}
+		catch (Exception ex) {
+			log.error(ex.toString(), ex.getCause());
+			throw new NotFoundException(ExceptionConstant.NOTFOUND_EXCEPTION, ex);
+		}
+	}
+	
+	public List findAll() 
+		throws NotFoundException  {
+		
+		try {
+			return ${bean.name}DAO.findAll();
+		}
+		catch (BusinessException be) {
+			log.error(be.toString(), be.getCause());
+			throw new NotFoundException(be.getMessage(), be);
+		}
+		catch (Exception ex) {
+			log.error(ex.toString(), ex.getCause());
+			throw new NotFoundException(ExceptionConstant.NOTFOUND_EXCEPTION, ex);
+		}	
+	}
+}

@@ -1,0 +1,80 @@
+<%@include file="/pages/includes/taglib.jsp"%>
+
+<head>
+	<%@include file="/pages/includes/scriptsAndCss.jsp"%>
+	<script type="text/javascript">
+	function submitForm()
+	{
+		
+		<%if(request.getAttribute("addUpdateFlag").equals("add")){ %>
+			document.forms[0].action = "<%=request.getContextPath()%>/saveAdd${bean.name}.do?webaction=saveAdd";
+			alert("add"); 
+		<%}
+		else if(request.getAttribute("addUpdateFlag").equals("update"))
+		{%>
+			document.forms[0].action="<%=request.getContextPath()%>/saveUpdate${bean.name}.do?webaction=saveUpdate"
+				alert("update");
+		<%} %>
+		document.forms[0].submit();
+	}
+	</script>
+
+</head>
+
+<head>
+    <title> '${module}.jsp' starting page</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<body>
+<%@include file="/pages/${module.toLowerCase()}/${bean.name}Menu.jsp" %>
+
+<h2><bean:message bundle="${module}" key="${module.toUpperCase()}.showAdd${bean.name}.PageTitle"/></h2>
+<html:form action="/saveAdd${bean.name}.do?webaction=saveAdd">
+<table class="grid" align="center">
+	#set($colCounter = 0)
+#foreach($attribute in $bean.attribute)
+
+	#if($colCounter == 0)
+	<tr bgcolor="#EDEAD9" class="text">
+	#end
+		<td width="22%" class="text">
+			<div align="left">
+				<bean:message bundle="${module}" key="${module.toUpperCase()}.${bean.name}Form.${attribute.name}"/>
+			</div>
+		</td>
+		<td width="11%">
+			<div align="left">
+				<html:text property="${attribute.name}" styleClass="textbox1"></html:text>
+
+			</div>
+		</td>
+	#if($colCounter == 0)
+	</tr>
+	#end
+	
+	#if($colCounter == 3)
+	#set($colCounter = 0)
+	#end
+	#end
+			
+      		<tr>
+				<td nowrap align="center" colspan="3">
+								
+								<input onclick="submitForm();" type="button" class="btngrey" value='<bean:message bundle="${module}" key="${module.toUpperCase()}.showAdd${bean.name}.addButton"/>' />
+							</td>		
+				<td nowrap align="center" colspan="3">		
+								<input type="button" class="btngrey" value='<bean:message bundle="${module}" key="${module.toUpperCase()}.showAdd${bean.name}.CancelButton"/>' />
+							</td>
+						</tr>
+				</table>
+	</html:form>
+  </body>
+

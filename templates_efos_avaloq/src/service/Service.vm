@@ -1,0 +1,54 @@
+package ${package}.service;
+
+import java.util.*;
+
+import com.maa.core.exception.AddException;
+import com.maa.core.exception.BusinessException;
+import com.maa.core.exception.DeleteException;
+import com.maa.core.exception.NotFoundException;
+import com.maa.core.exception.UpdateException;
+
+import com.maa.core.exception.BusinessException;
+
+import ${package}.model.${bean.className}Model;
+
+/**
+ * Business Service Interface for $bean.name. 
+ */
+public interface ${bean.className}Service {
+	/**
+	 * Add model.
+	 * @param model The model object
+	 */
+    public void add (${bean.className}Model model) throws AddException;
+    
+	/**
+	 * Update model.
+	 * @param model The model object
+	 */
+    public void update (${bean.className}Model model) throws UpdateException;
+
+	/**
+	 * Delete model.
+	 * @param ids Array of ids to Delete
+	 */
+    public void delete(String[] ${bean.name}Ids) throws BusinessException,DeleteException;
+    
+	/**
+	 * Find by Primary Key
+	 * @param id The primary key
+	 */
+    public ${bean.className}Model findByPrimaryKey(Integer id) throws NotFoundException;
+    
+	/**
+	 * Find by query filter.
+	 * @param model The model object containing filter values
+	 */
+    public List findByPropertyValues (${bean.className}Model model) throws BusinessException,NotFoundException;
+    
+	/**
+	 * Find All
+	 */
+    public List findAll() throws NotFoundException;
+    
+} // end $strings.capitalizeFirstLetter(${bean.name})Service

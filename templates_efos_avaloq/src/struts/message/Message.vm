@@ -1,0 +1,25 @@
+#Message Properties for $bean.name Form bean
+#foreach ($attribute in $bean.attribute)
+${module.toUpperCase()}.${bean.name}Form.$attribute.name=$strings.capitalizeFirstLetter($attribute.title)
+#end
+${module.toUpperCase()}.${bean.name}Menu.PageTitle = $strings.capitalizeFirstLetter(${bean.name})
+${module.toUpperCase()}.showAdd${bean.name}.PageTitle = Show Add$strings.capitalizeFirstLetter(${bean.name})
+${module.toUpperCase()}.${bean.name}.addButton = Add $strings.capitalizeFirstLetter(${bean.name})
+${module.toUpperCase()}.${bean.name}.CancelButton = Cancel
+${module.toUpperCase()}.${bean.name}.PageTitle = Update $strings.capitalizeFirstLetter(${bean.name})
+${module.toUpperCase()}.${bean.name}.addButton = Update $strings.capitalizeFirstLetter(${bean.name})
+${module.toUpperCase()}.${bean.name}.CancelButton = Cancel
+${module.toUpperCase()}.${bean.name}Menu.HomeLink = Home
+${module.toUpperCase()}.${bean.name}Menu.DashBoardLink = Dashboard
+${module.toUpperCase()}.${bean.name}Menu.SearchLink = Search
+${module.toUpperCase()}.${bean.name}Menu.ReportLink = Reports
+${module.toUpperCase()}.${bean.name}Menu.HelpLink = Help
+${module.toUpperCase()}.${bean.name}Form.SearchButton = Search
+${module.toUpperCase()}.${bean.name}Form.DeleteButton = Delete
+${module.toUpperCase()}.${bean.name}Form.AddNewButton = Add $strings.capitalizeFirstLetter(${bean.name})
+${module.toUpperCase()}.${bean.name}.PageTitle = Update $strings.capitalizeFirstLetter(${bean.name})
+${module.toUpperCase()}.${bean.name}.addButton = Update $strings.capitalizeFirstLetter(${bean.name})
+${module.toUpperCase()}.update${bean.name}.CancelButton = Cancel
+${module.toUpperCase()}.view${bean.name}.PageTitle = View $strings.capitalizeFirstLetter(${bean.name})
+${module.toUpperCase()}.view${bean.name}.CancelButton = Cancel
+${module.toUpperCase()}.view${bean.name}.UpdateButton = Update $strings.capitalizeFirstLetter(${bean.name})

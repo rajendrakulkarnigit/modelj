@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="${package}.model.${bean.className}Model" table="${bean.name.toUpperCase()}" >
+#foreach ($attribute in $bean.attribute)
+#if($attribute.primaryKey)
+    <id name="$attribute.name" type="java.lang.$attribute.type">
+        <column name="$attribute.name.toUpperCase()" />
+        <generator class="identity" />
+    </id>
+#end
+		
+#if(!$attribute.primaryKey)
+    <property name="$attribute.name" type="java.lang.$attribute.type">
+        <column name="$attribute.name.toUpperCase()" />
+    </property>
+#end
+#end
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,134 @@
+package ${package}.model;
+import java.util.Date;
+import com.maa.core.model.BaseModel;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+/**
+ * Data model for $strings.capitalizeFirstLetter(${bean.name}).
+ */
+public class ${bean.className}Model extends BaseModel {
+
+#foreach ($attribute in $bean.attribute)
+    // the $attribute.title.toLowerCase()
+    private $attribute.type $attribute.name;
+#end
+
+    // relationships
+#foreach ($rel in $root.relationship)
+#if ($rel.parentMultiplicity == 'One' && $rel.childMultiplicity == 'One' && $rel.parentBeanName == $bean.name)
+    private ${rel.childBeanName}Model ${rel.childBeanName.toLowerCase()};
+#elseif ($rel.parentMultiplicity == 'One' && $rel.childMultiplicity == 'One' && $rel.childBeanName == $bean.name && $rel.navigation == 'bidirectional')
+    private ${rel.parentBeanName}Model ${rel.parentBeanName.toLowerCase()};
+#elseif ($rel.childBeanName == $bean.name && $rel.childMultiplicity.toLowerCase() == 'many')
+    // the id of the ${rel.parentBeanName} this $bean.name belongs to
+    private Integer ${rel.parentBeanName.toLowerCase()}Id;
+#elseif ($rel.parentBeanName == $bean.name && $rel.parentMultiplicity.toLowerCase() == 'many')
+    // the id of the ${rel.childBeanName} this $bean.name belongs to
+    private Integer ${rel.childBeanName.toLowerCase()}Id;
+#end
+#end
+
+    // attribute getters/setters
+#foreach ($attribute in $bean.attribute)
+    /**
+     * Returns the value of the $attribute.title
+     * @return The $attribute.name
+     */
+    public $strings.capitalizeFirstLetter($attribute.type) get${strings.capitalizeFirstLetter($attribute.name)}() {
+    	return $attribute.name;
+    }
+
+    /**
+     * Sets the value of the $attribute.title
+     * @param $attribute.name The $attribute.title
+     */
+    public void set${strings.capitalizeFirstLetter($attribute.name)}($strings.capitalizeFirstLetter($attribute.type) ${attribute.name}) {
+    	this.$attribute.name = $attribute.name;
+    }
+#end
+
+    // relationship getters/setters
+#foreach ($rel in $root.relationship)
+#if ($rel.parentMultiplicity == 'One' && $rel.childMultiplicity == 'One' && $rel.parentBeanName == $bean.name)
+#set ($methodName = $strings.capitalizeFirstLetter($rel.childBeanName.toLowerCase()))
+    /**
+     * Returns the value of the ${rel.childBeanName}Model
+     * @return the ${rel.childBeanName}Model
+     */
+    public ${rel.childBeanName}Model get${methodName}Model() {
+        return ${rel.childBeanName.toLowerCase()};
+    }
+
+    /**
+     * Sets the value of the ${rel.childBeanName}Model
+     * @param ${rel.childBeanName}Model the ${rel.childBeanName}Model
+     */
+    public void set${methodName}Model(${rel.childBeanName}Model ${rel.childBeanName.toLowerCase()}) {
+    	this.${rel.childBeanName.toLowerCase()} = ${rel.childBeanName.toLowerCase()};
+    }
+	#elseif ($rel.parentMultiplicity == 'One' && $rel.childMultiplicity == 'One' && $rel.childBeanName == $bean.name && $rel.navigation == 'bidirectional')
+	#set ($methodName = $strings.capitalizeFirstLetter($rel.parentBeanName.toLowerCase()))
+    /**
+     * Returns the value of the ${rel.parentBeanName}Model
+     * @return the ${rel.parentBeanName}Model
+     */
+    public ${rel.parentBeanName}Model get${methodName}Model() {
+    	return ${rel.parentBeanName.toLowerCase()};
+    }
+
+    /**
+     * Sets the value of the ${rel.parentBeanName}Model
+     * @param ${rel.parentBeanName}Model the ${rel.parentBeanName}Model
+     */
+    public void set${methodName}Model(${rel.parentBeanName}Model ${rel.parentBeanName.toLowerCase()}) {
+    	this.${rel.parentBeanName.toLowerCase()} = ${rel.parentBeanName.toLowerCase()};
+    }
+	#elseif ($rel.childBeanName == $bean.name && $rel.childMultiplicity.toLowerCase() == 'many')
+	#set ($relName = $strings.capitalizeFirstLetter($rel.parentBeanName.toLowerCase()))
+    /**
+     * Returns the id of the ${relName} this $strings.capitalizeFirstLetter(${bean.name}) belongs to
+     * @return The ${relName} Id
+     */
+    public Integer get${relName}Id() {
+    	return ${relName.toLowerCase()}Id;
+    }
+
+    /**
+     * Sets the id of the ${relName} this $strings.capitalizeFirstLetter(${bean.name}) belongs to
+     * @param ${relName.toLowerCase()}Id the ${relName} Id
+     */
+    public void set${relName}Id(Integer ${relName.toLowerCase()}Id) {
+    	this.${relName.toLowerCase()}Id = ${relName.toLowerCase()}Id;
+    }
+	#elseif ($rel.parentBeanName == $bean.name && $rel.parentMultiplicity.toLowerCase() == 'many')
+	#set ($relName = $strings.capitalizeFirstLetter($rel.childBeanName.toLowerCase()))
+    /**
+     * Returns the id of the ${relName} this $strings.capitalizeFirstLetter(${bean.name}) belongs to
+     * @return the ${relName} Id
+     */
+    public Integer get${relName}Id() {
+    	return ${relName.toLowerCase()}Id;
+    }
+
+    /**
+     * Sets the id of the ${relName} this $strings.capitalizeFirstLetter(${bean.name}) belongs to
+     * @param ${relName.toLowerCase()}Id the ${relName} Id
+     */
+    public void set${relName}Id(Integer ${relName.toLowerCase()}Id) {
+    	this.${relName.toLowerCase()}Id = ${relName.toLowerCase()}Id;
+    }
+	#end
+	#end
+
+    /**
+     * A toString method that can be used in any class.
+     * uses reflection to dynamically print java class field values one line at a time.
+     * Requires the Apache Commons ToStringBuilder class.
+     */
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this,
+       	ToStringStyle.MULTI_LINE_STYLE);
+    }
+
+} // end ${bean.className}Model

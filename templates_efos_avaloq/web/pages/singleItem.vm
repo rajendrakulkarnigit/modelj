@@ -1,0 +1,37 @@
+#foreach ($attribute in $bean.attribute)
+#if (!$attribute.primaryKey)
+        <tr> 
+          <td nowrap valign="top" class="bodySubHead1">
+            <b>$strings.capitalizeFirstLetter($attribute.name):</b>
+	    </td>
+	    <td>
+            <bean:write name="${bean.name}Form" 
+				property="$attribute.name" scope="request"/>
+	    </td>
+	  </tr>
+#end
+#end
+
+## include one-to-one relationships
+#foreach ($relationship in $root.relationship)
+#if ($relationship.parentBeanName == $bean.name && $strings.capitalizeFirstLetter($relationship.childMultiplicity) == 'One')
+#foreach ($relBean in $root.bean)
+#if ($relBean.name == $relationship.childBeanName)
+#foreach ($attribute in $relBean.attribute)
+#if (!$attribute.primaryKey)
+      <%-- fields for the $relationship.childBeanName one-to-one relationship --%>
+        <tr> 
+          <td nowrap valign="top" class="bodySubHead1">
+            <b>$strings.capitalizeFirstLetter($attribute.name):</b>
+	    </td>
+	    <td>
+            <bean:write name="${bean.name}Form" 
+				property="$attribute.name" scope="request"/>
+	    </td>
+	  </tr>
+#end
+#end
+#end
+#end
+#end
+#end

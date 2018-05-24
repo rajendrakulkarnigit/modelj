@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+          
+<struts-config>
+    <!-- ========== Form Bean Definitions =================================== -->
+    <form-beans>
+#foreach ($bean in $beans)
+        <form-bean name="${bean.name}Form" type="${package}.web.struts.form.${bean.className}Form" />
+#end
+    </form-beans>
+
+    <!-- ========== Action Mapping Definitions ============================== --> 
+    <action-mappings>
+	
+	#foreach ($bean in $beans)
+	  	<!-- $bean.name mappings --> 
+	  	<action path="/dashboard${bean.className}"
+		    type="${package}.web.struts.action.${bean.className}Action" 
+		    scope="request"
+		    name="${bean.name}Form" 
+		    parameter="webaction" 
+		    validate="false">
+		    <forward name="DASHBOARD_${bean.name.toUpperCase()}" path="/pages/${module}/${bean.className}Dashboard.jsp" />
+	    </action>
+		
+		<action path="/showAdd${bean.className}" 
+		    parameter="webaction"
+	        type="${package}.web.struts.action.${bean.className}Action"
+	        scope="request" 
+	        name="${bean.name}Form" 
+	        validate="false">
+	  	    <forward name="SHOW_ADD_${bean.name.toUpperCase()}" path="/pages/${module.toLowerCase()}/${bean.className}AddUpdate.jsp"/>
+		</action>
+	
+		<action path="/saveAdd${bean.className}" 
+		    parameter="webaction"
+	        type="${package}.web.struts.action.${bean.className}Action"
+	        scope="request" 
+	        name="${bean.name}Form" 
+	        validate="false">
+	  	    <forward name="LIST_${bean.name.toUpperCase()}" path="/list${bean.className}.do?webaction=list"/>
+		</action>
+	
+		<action path="/showUpdate${bean.className}" 
+	   	    parameter="webaction"
+	        type="${package}.web.struts.action.${bean.className}Action"
+	        scope="request" 
+	        name="${bean.name}Form" 
+	        validate="false">
+	  	    <forward name="SHOW_UPDATE_${bean.name.toUpperCase()}" path="/pages/${build.module.toLowerCase()}/${bean.className}AddUpdate.jsp"/>
+		</action>
+	
+		<action path="/saveUpdate${bean.className}" 
+		    parameter="webaction"
+	        type="${package}.web.struts.action.${bean.className}Action"
+	        scope="request" 
+	        name="${bean.name}Form" 
+	        validate="false">
+	  	    <forward name="LIST_${bean.name.toUpperCase()}" path="/list${bean.className}.do?webaction=list"/>
+		</action>
+	
+		<action path="/delete${bean.className}" 
+		    parameter="webaction"
+	        type="${package}.web.struts.action.${bean.className}Action"
+	        scope="request" 
+	        name="${bean.name}Form" 
+	        validate="false">
+	  	    <forward name="LIST_${bean.name.toUpperCase()}" path="/list${bean.className}.do?webaction=list"/>
+		</action>
+	
+		<action path="/view${bean.className}" 
+		    parameter="webaction"
+		    type="${package}.web.struts.action.${bean.className}Action"
+		    scope="request" 
+		    name="${bean.name}Form" 
+		    validate="false">
+		    <forward name="VIEW_${bean.name.toUpperCase()}" path="/pages/${build.module.toLowerCase()}/${bean.className}View.jsp"/>
+		</action>
+		<action path="/search${bean.className}" 
+			parameter="webaction"
+			type="${package}.web.struts.action.${bean.className}Action"
+			scope="request" 
+			name="${bean.name}Form" 
+			validate="false">
+      			<forward name="LIST_${bean.name.toUpperCase()}" path="/pages/${build.module.toLowerCase()}/${bean.className}List.jsp"/>
+		</action>
+		<action path="/list${bean.className}" 
+		        parameter="webaction"
+		        type="${package}.web.struts.action.${bean.className}Action"
+		        scope="request" 
+		        name="${bean.name}Form" 
+		        validate="false">
+	  	    <forward name="LIST_${bean.name.toUpperCase()}" path="/pages/${build.module.toLowerCase()}/${bean.className}List.jsp"/>
+			#foreach ($relationship in $root.relationship)
+			#if ($relationship.childBeanName == $bean.name && $relationship.childMultiplicity.toLowerCase() == 'many')
+		    <forward name="listFrom${relationship.parentBeanName}" path="/${relationship.parentBeanName.toLowerCase()}/view.do"/>
+			#elseif ($relationship.parentBeanName == $bean.name && $relationship.parentMultiplicity.toLowerCase() == 'many')
+	   	    <forward name="listFrom${relationship.childBeanName}" path="/${relationship.childBeanName.toLowerCase()}/view.do"/>
+			#end
+			#end
+	    </action>
+	#end
+	
+	</action-mappings>
+  
+    <!-- ========== Associated Messages Resource settings =================== -->
+    <!-- Not used by tiles or this website, but needed due to a bug in actual Struts version -->
+    <message-resources parameter="org.apache.struts.webapp.tiles.dev1-1.ApplicationResources" null="false" />
+
+    <message-resources key="${module}" 
+    	parameter="${package}.web.struts.message.MessageResources"
+        null="false" />
+
+    <plug-in className="org.springframework.web.struts.ContextLoaderPlugIn"></plug-in>
+    
+    <plug-in className="org.apache.struts.tiles.TilesPlugin" >
+        <set-property property="definitions-config" value="/WEB-INF/tileDefinitions.xml" />
+        <set-property property="moduleAware" value="true" />
+    </plug-in>
+    
+    <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+        <set-property property="pathnames"
+            value="/WEB-INF/config/struts/validator/validator-rules.xml,
+ 	               /WEB-INF/config/struts/validator/validation.xml" />
+    </plug-in>
+</struts-config>

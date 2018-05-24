@@ -1,0 +1,102 @@
+<%@ taglib uri="/WEB-INF/tlds/struts-logic.tld" prefix="logic" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-html.tld" prefix="html" %>
+<%@ taglib uri="/WEB-INF/tlds/struts-bean.tld" prefix="bean" %>
+
+    <span class="bodyHead1">
+		${bean.name} Entries
+	</span>
+	<BR>
+	Click a $bean.name.toLowerCase() to view details
+	<BR>
+	<BR>
+
+      <table width="100%" border="0" cellpadding="0" class="bodyText">
+        <tr> 
+#foreach ($attribute in $bean.attribute)
+#if (!$attribute.primaryKey)
+          <td nowrap valign="top"> 
+	            <b>${attribute.title}</b>
+	    </td>
+#end
+#end
+
+## include one-to-one relationships
+#foreach ($relationship in $root.relationship)
+#if ($relationship.parentBeanName == $bean.name && $strings.capitalizeFirstLetter($relationship.childMultiplicity) == 'One')
+#foreach ($relBean in $root.bean)
+#if ($relBean.name == $relationship.childBeanName)
+      <%-- titles for the $relationship.childBeanName one-to-one relationship --%>
+#foreach ($attribute in $relBean.attribute)
+#if (!$attribute.primaryKey)
+          <td nowrap valign="top"> 
+	            <b>${attribute.title}</b>
+	    </td>
+#end
+#end
+#end
+#end
+#end
+#end
+
+	    <td>
+			<b>Operations</b>
+	    </td>
+	  </tr>
+        <logic:iterate  id="$bean.name.toLowerCase()" 
+				name="${bean.name.toUpperCase()}_ITEMS">
+	  <tr>
+#foreach ($attribute in $bean.attribute)
+#if (!$attribute.primaryKey)
+          <td nowrap valign="top"> 
+	        <html:link page="/$bean.name.toLowerCase()/view.do" 
+                         name="$bean.name.toLowerCase()"
+                         property="webParams">
+	            <bean:write name="$bean.name.toLowerCase()" 
+					property="$attribute.name"/>
+		  </html:link>
+	    </td>
+#end
+#end
+
+## include one-to-one relationships
+#foreach ($relationship in $root.relationship)
+#if ($relationship.parentBeanName == $bean.name && $strings.capitalizeFirstLetter($relationship.childMultiplicity) == 'One')
+#foreach ($relBean in $root.bean)
+#if ($relBean.name == $relationship.childBeanName)
+      <%-- fields for the $relationship.childBeanName one-to-one relationship --%>
+#foreach ($attribute in $relBean.attribute)
+#if (!$attribute.primaryKey)
+          <td nowrap valign="top"> 
+	        <html:link page="/$bean.name.toLowerCase()/view.do" 
+                         name="$bean.name.toLowerCase()"
+                         property="webParams">
+	            <bean:write name="$bean.name.toLowerCase()" 
+					property="${relBean.name.toLowerCase()}Model.${attribute.name}"/>
+		  </html:link>
+	    </td>
+#end
+#end
+#end
+#end
+#end
+#end
+
+	    <td>
+	        <html:link page="/$bean.name.toLowerCase()/update.do" 
+                         name="$bean.name.toLowerCase()"
+                         property="webParams">
+			Edit
+		  </html:link>
+		  &nbsp;
+		  &nbsp;
+	        <html:link page="/$bean.name.toLowerCase()/confirmDelete.do" 
+                         name="$bean.name.toLowerCase()"
+                         property="webParams">
+			Delete
+		  </html:link>
+	    </td>
+
+        </tr>
+        </logic:iterate>
+
+     </table>

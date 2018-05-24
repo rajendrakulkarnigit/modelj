@@ -1,0 +1,287 @@
+package ${package}.web.struts.action;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.locale.converters.DateLocaleConverter;
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import com.maa.core.web.struts.action.BaseDispatchAction;
+import com.maa.core.service.spring.ServiceFinder;
+import ${package}.service.${bean.className}Service;
+import ${package}.web.struts.form.${bean.className}Form;
+import ${package}.model.${bean.className}Model;
+import com.maa.core.exception.BusinessException;
+import com.maa.core.exception.ExceptionConstant;
+import com.maa.core.log.BaseLogger;
+import com.maa.core.exception.AddException;
+import com.maa.core.exception.BusinessException;
+import com.maa.core.exception.DeleteException;
+import com.maa.core.exception.NotFoundException;
+import com.maa.core.exception.UpdateException;
+
+/**
+ * Action class handles various actions $strings.capitalizeFirstLetter(${bean.name}) 
+ */
+public class ${bean.className}Action extends BaseDispatchAction {
+
+	private static final BaseLogger log = BaseLogger.getInstance(${bean.className}Action.class);
+
+	private ${bean.className}Service ${bean.name}Service;
+
+	public ${bean.className}Service get${bean.className}Service(){
+		return ${bean.name}Service;
+	}
+	
+	public void set${bean.className}Service (${bean.className}Service ${bean.name}Service) {
+		this.${bean.name}Service = ${bean.name}Service; 
+	}
+
+	public ${bean.className}Action() {
+		
+	}
+	
+	public ActionForward dashboard(ActionMapping mapping, ActionForm form,
+		HttpServletRequest request, HttpServletResponse response)
+		throws Exception {
+
+		System.out.println("Inside dashboard");		
+		return mapping.findForward("DASHBOARD_${bean.name.toUpperCase()}");
+	}
+
+	public ActionForward showAdd(ActionMapping mapping, ActionForm form,
+		HttpServletRequest request, HttpServletResponse response)
+		throws Exception {
+		
+		ActionErrors errors = new ActionErrors();			
+		try {
+			System.out.println("Inside showAdd");
+			request.setAttribute("addUpdateFlag", "add");
+			return mapping.findForward("SHOW_ADD_${bean.name.toUpperCase()}");
+		}
+		catch (Exception e) {
+			errors.add(ExceptionConstant.GENERIC_EXCEPTION,
+				new ActionError(ExceptionConstant.GENERIC_EXCEPTION));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}		
+	}
+	
+	public ActionForward saveAdd(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		ActionErrors errors = new ActionErrors();			
+		try {
+			${bean.className}Form ${bean.name}Form = (${bean.className}Form) form;
+			${bean.name}Service = (${bean.className}Service)ServiceFinder.getContext(request).getBean("${bean.name}Service");
+			${bean.name}Service.add(${bean.name}Form.populateModel());
+		}
+		catch (AddException be) {
+			errors.add(be.getErrorCode(),
+				new ActionError(be.getErrorCode(), be.getCause().getMessage()));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}
+		catch (Exception e) {
+			errors.add(ExceptionConstant.GENERIC_EXCEPTION,
+				new ActionError(ExceptionConstant.GENERIC_EXCEPTION));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}	
+		return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+	}
+	
+	public ActionForward showUpdate(ActionMapping mapping, ActionForm form,
+		HttpServletRequest request, HttpServletResponse response)
+		throws Exception {
+
+		ActionErrors errors = new ActionErrors();
+		request.setAttribute("addUpdateFlag", "update");
+		${bean.className}Form ${bean.name}Form = (${bean.className}Form) form;
+		
+		try {
+			int ${bean.name}Id = Integer.parseInt(request.getParameter("${bean.name}Id"));
+			${bean.name}Service = (${bean.className}Service)ServiceFinder.getContext(request).getBean("${bean.name}Service");
+			${bean.name}Form.populateForm(${bean.name}Service.findByPrimaryKey(${bean.name}Id));
+		}
+		catch (Exception e) {
+			errors.add(ExceptionConstant.GENERIC_EXCEPTION,
+				new ActionError(ExceptionConstant.GENERIC_EXCEPTION));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}			
+		
+		return mapping.findForward("SHOW_UPDATE_${bean.name.toUpperCase()}");
+	}
+
+	public ActionForward saveUpdate(ActionMapping mapping, ActionForm form,
+		HttpServletRequest request, HttpServletResponse response)
+		throws Exception {
+		
+		ActionErrors errors = new ActionErrors();			
+		
+		try {
+			${bean.className}Form ${bean.name}Form = (${bean.className}Form) form;
+			${bean.name}Service = (${bean.className}Service)ServiceFinder.getContext(request).getBean("${bean.name}Service");
+			${bean.name}Service.update(${bean.name}Form.populateModel());
+		}
+		catch (UpdateException be) {
+			errors.add(be.getErrorCode(),
+				new ActionError(be.getErrorCode(), be.getCause().getMessage()));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}
+		catch (Exception e) {
+			errors.add(ExceptionConstant.GENERIC_EXCEPTION,
+				new ActionError(ExceptionConstant.GENERIC_EXCEPTION));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}			
+		
+		return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+	}
+
+	public ActionForward view(ActionMapping mapping, ActionForm form,
+		HttpServletRequest request, HttpServletResponse response)
+		throws Exception {
+		
+		ActionErrors errors = new ActionErrors();		
+
+		try {
+			${bean.className}Form ${bean.name}Form = (${bean.className}Form) form;
+			int ${bean.name}Id = Integer.parseInt(request.getParameter("${bean.name}Id"));
+			${bean.name}Service = (${bean.className}Service) ServiceFinder.getContext(request).getBean("${bean.name}Service");
+			${bean.name}Form.populateForm(${bean.name}Service.findByPrimaryKey(${bean.name}Id));
+		}
+		catch (Exception e)
+		{
+			errors.add(ExceptionConstant.GENERIC_EXCEPTION,
+				new ActionError(ExceptionConstant.GENERIC_EXCEPTION));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}	
+		return mapping.findForward("VIEW_${bean.name.toUpperCase()}");
+	}
+	
+	public ActionForward list(ActionMapping mapping,ActionForm form,
+		HttpServletRequest request, HttpServletResponse response)
+		throws Exception {
+		
+		ActionErrors errors = new ActionErrors();		
+		System.out.println("Inside search");
+		${bean.className}Form ${bean.name}Form = (${bean.className}Form) form;
+		${bean.className}Model model = new ${bean.className}Model();
+		
+		String pattern = "DD/mm/yyyy";
+		Locale locale = Locale.getDefault();
+		DateLocaleConverter converter = new DateLocaleConverter(locale,pattern);
+		converter.setLenient(true);
+		ConvertUtils.register(converter, java.util.Date.class);
+		
+		String strError = "";
+		${bean.className}Service ${bean.name}Service = (${bean.className}Service) ServiceFinder.getContext(request).getBean("${bean.name}Service");
+	
+		List ${bean.name}List = new ArrayList();
+		
+		try {
+			${bean.name}Form.set${bean.className}List(${bean.name}Service.findAll());
+		} 
+		catch (Exception e) {
+			errors.add(ExceptionConstant.GENERIC_EXCEPTION,
+				new ActionError(ExceptionConstant.GENERIC_EXCEPTION));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}		
+		
+		return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+
+	}
+	
+
+
+	public ActionForward search(ActionMapping mapping, ActionForm form,
+		HttpServletRequest request, HttpServletResponse response)
+		throws Exception {
+		
+		ActionErrors errors = new ActionErrors();		
+		System.out.println("Inside search");
+		${bean.className}Form ${bean.name}Form = (${bean.className}Form) form;
+		${bean.className}Model ${bean.name} = new ${bean.className}Model();
+		
+		String pattern = "DD/mm/yyyy";
+		Locale locale = Locale.getDefault();
+		DateLocaleConverter converter = new DateLocaleConverter(locale,pattern);
+		converter.setLenient(true);
+		ConvertUtils.register(converter, java.util.Date.class);
+		
+		String strError = "";
+		${bean.className}Service ${bean.name}Service = (${bean.className}Service)ServiceFinder.getContext(request).getBean("${bean.name}Service");
+		List ${bean.name}List = new ArrayList();
+		
+		try {
+			//mapFormToBean(${bean.name}Form,${bean.name});
+			${bean.name}Form.set${bean.className}List( ${bean.name}Service.findByPropertyValues(${bean.name}));
+			
+		} 
+		catch (BusinessException be) {
+			errors.add(be.getErrorCode(),
+				new ActionError(be.getErrorCode(), be.getCause().getMessage()));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}
+		catch (Exception e) {
+			errors.add(ExceptionConstant.GENERIC_EXCEPTION,
+				new ActionError(ExceptionConstant.GENERIC_EXCEPTION));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}		
+		
+		return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+	}
+	
+
+	public ActionForward delete(ActionMapping mapping, ActionForm form,
+		HttpServletRequest request, HttpServletResponse response)
+		throws Exception {
+		
+		System.out.println("Inside delete");
+		
+		ActionErrors errors = new ActionErrors();
+		
+		try {
+			${bean.className}Form ${bean.name}Form = (${bean.className}Form) form;
+			${bean.name}Service = (${bean.className}Service)ServiceFinder.getContext(request).getBean("${bean.name}Service");
+			System.out.println("CheckBox Values" + ${bean.name}Form.get${bean.className}Ids());
+			${bean.name}Service.delete(${bean.name}Form.get${bean.className}Ids());
+		}
+		catch (BusinessException be) {
+			errors.add(be.getErrorCode(),
+				new ActionError(be.getErrorCode(), be.getCause().getMessage()));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}
+		catch (Exception e) {
+			errors.add(ExceptionConstant.GENERIC_EXCEPTION,
+				new ActionError(ExceptionConstant.GENERIC_EXCEPTION));
+			saveErrors(request, errors);
+			return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+		}				
+		
+		return mapping.findForward("LIST_${bean.name.toUpperCase()}");
+	}
+     
+	private void resetForm(${bean.className}Form form) {
+	}
+
+	private ActionErrors validate(${bean.className}Form form, int subaction) {
+		ActionErrors errors = new ActionErrors();
+		return errors;
+	}
+}

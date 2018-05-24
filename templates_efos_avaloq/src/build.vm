@@ -1,0 +1,193 @@
+#*
+ * ModelJ - the RAD tool for J2EE.
+ * Copyright (C) 2003 Tom Tessier
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * 
+ *#<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="$application.shortName" default="all" basedir=".">
+
+  <property name="name" value="$application.name"/>
+  <property name="version" value="1.0"/>
+
+  <property name="build.ear.dir" value="${basedir}/build/ear"/>
+  <property name="build.ejb.dir" value="${basedir}/build/ejb"/>
+  <property name="build.war.dir" value="${basedir}/build/war"/>
+  <property name="build.dir" value="${basedir}/build"/>
+
+  <property name="src.dir" value="${basedir}/src"/>
+
+  <property name="web.dir" value="${basedir}/web"/>
+
+  <property name="lib.dir" value="${basedir}/lib"/>
+  <property name="web.lib.dir" value="${basedir}/web/WEB-INF/lib"/>
+
+<!-- uncomment for jikes compilation
+  <property name="build.compiler" value="jikes"/>
+-->
+
+  <path id="build.path">
+    <fileset dir="${lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="${web.lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+
+<!-- 
+**************************************************************
+INIT
+**************************************************************
+-->
+<target name="init" description="All init goes here, and everything depends on me">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build.ear.dir}"/>
+    <mkdir dir="${build.ejb.dir}"/>
+    <mkdir dir="${build.war.dir}"/>
+    <mkdir dir="${build.war.dir}/WEB-INF/classes"/>
+</target>
+
+
+<!-- 
+**************************************************************
+CLEAN
+**************************************************************
+-->
+<target name="clean" depends="init"            description="delete all .class files">
+    <delete dir="${build.ejb.dir}/com/" />
+</target>
+
+
+<!-- 
+**************************************************************
+DEPENDENCY CHECKS
+**************************************************************
+-->
+<target name="dep" depends="init">
+  <depend srcdir="${src.dir}" destdir="${build.ejb.dir}" cache="${build.ejb.dir}/depcache"
+          closure="yes"/>
+</target>
+
+<!-- 
+**************************************************************
+COMPILE THE EJB SOURCE
+**************************************************************
+-->
+<target name="compileEjb"  depends="dep">
+    <!-- Compile the java code from ${src.dir} into ${build.ejb.dir} -->
+    <javac srcdir="${src.dir}" destdir="${build.ejb.dir}" deprecation="yes"
+         includes="$strings.getPackageAsPath($package)components/**,com/tomtessier/components/ejb/**"
+         debug="no" optimize="yes">
+       <classpath refid="build.path"/>
+    </javac>
+</target>
+
+<!-- 
+**************************************************************
+CREATES THE EJB JAR FILE
+**************************************************************
+-->
+<target name="makeJar"  depends="compileEjb">
+    <!-- delete the previous jar file -->
+    <delete file="${build.ear.dir}/ejbs.jar" />
+
+    <copy todir="${build.ejb.dir}" overwrite="true">
+      <fileset dir="${src.dir}">
+        <include name="META-INF/ejb-jar.xml" />
+        <include name="META-INF/jboss.xml" />
+        <include name="META-INF/jbosscmp-jdbc.xml" />
+      </fileset>
+    </copy>
+
+    <!-- and now create the jar file -->
+    <jar jarfile="${build.ear.dir}/ejbs.jar"
+         basedir="${build.ejb.dir}"
+         excludes="depcache/"
+    />
+</target>
+
+
+<!-- 
+**************************************************************
+COMPILE THE WAR SOURCE
+**************************************************************
+-->
+<target name="compileWar"  depends="dep">
+    <!-- Compile the java code from ${src.dir} into ${build.war.dir} -->
+    <javac srcdir="${src.dir}" destdir="${build.war.dir}/WEB-INF/classes" deprecation="yes"
+         includes="$strings.getPackageAsPath($package)struts/**,com/tomtessier/components/**"
+         debug="no" optimize="yes">
+       <classpath refid="build.path"/>
+    </javac>
+</target>
+
+
+<!-- 
+**************************************************************
+CREATES THE WEB WAR FILE
+**************************************************************
+-->
+<target name="makeWar"  depends="compileWar">
+    <!-- delete the previous jar file -->
+    <delete file="${build.ear.dir}/web.war" />
+
+    <copy todir="${build.war.dir}" overwrite="true">
+      <fileset dir="${web.dir}">
+        <include name="**" />
+      </fileset>
+    </copy>
+
+    <!-- and now create the war file -->
+    <jar jarfile="${build.ear.dir}/web.war"
+         basedir="${build.war.dir}"
+         excludes="depcache/"
+    />
+</target>
+
+<!-- 
+**************************************************************
+CREATES THE APPLICATION SERVER EAR FILE
+**************************************************************
+-->
+<target name="makeEar"  depends="makeJar, makeWar">
+    <!-- delete the previous jar file -->
+    <delete file="${build.dir}/${application.shortName}.ear" />
+
+    <copy todir="${build.ear.dir}" overwrite="true">
+      <fileset dir="${basedir}">
+        <include name="META-INF/application.xml" />
+	</fileset>
+    </copy>
+
+    <!-- and now create the ear file -->
+    <jar jarfile="${build.dir}/${application.shortName}.ear"
+         basedir="${build.ear.dir}"
+    />
+
+</target>
+
+<!-- 
+**************************************************************
+CREATES EVERYTHING
+**************************************************************
+-->
+<target name="all"  depends="makeEar"/>
+
+
+</project>

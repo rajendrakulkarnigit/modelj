@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+#foreach ($bean in $beans)
+		<property name="mappingResources">
+			<list>
+				<value>com/trade/${module}/model/${bean.className}.hbm.xml</value>
+			</list>
+		</property>
+
+	<bean id="${bean.name}DAO" class="${package}.dao.${bean.className}DAOImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="${bean.name}Service"
+		class="${package}.service.${bean.className}ServiceImpl">
+		<property name="${bean.name}DAO">
+			<ref local="${bean.name}DAO" />
+		</property>
+	</bean>	
+#end	
+</beans>
