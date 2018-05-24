@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+		<property name="mappingResources">
+			<list>
+				<value>com/trade/product/model/AccountBalance.hbm.xml</value>
+			</list>
+		</property>
+
+	<bean id="accountBalanceDAO" class="com.hsbc.gpb.sil.message.dao.AccountBalanceDAOImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="accountBalanceService"
+		class="com.hsbc.gpb.sil.message.service.AccountBalanceServiceImpl">
+		<property name="accountBalanceDAO">
+			<ref local="accountBalanceDAO" />
+		</property>
+	</bean>	
+</beans>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+          
+<struts-config>
+    <!-- ========== Form Bean Definitions =================================== -->
+    <form-beans>
+        <form-bean name="accountBalanceForm" type="com.hsbc.gpb.sil.message.web.struts.form.AccountBalanceForm" />
+    </form-beans>
+
+    <!-- ========== Action Mapping Definitions ============================== --> 
+    <action-mappings>
+	
+		  	<!-- accountBalance mappings --> 
+	  	<action path="/dashboardAccountBalance"
+		    type="com.hsbc.gpb.sil.message.web.struts.action.AccountBalanceAction" 
+		    scope="request"
+		    name="accountBalanceForm" 
+		    parameter="webaction" 
+		    validate="false">
+		    <forward name="DASHBOARD_ACCOUNTBALANCE" path="/pages/product/AccountBalanceDashboard.jsp" />
+	    </action>
+		
+		<action path="/showAddAccountBalance" 
+		    parameter="webaction"
+	        type="com.hsbc.gpb.sil.message.web.struts.action.AccountBalanceAction"
+	        scope="request" 
+	        name="accountBalanceForm" 
+	        validate="false">
+	  	    <forward name="SHOW_ADD_ACCOUNTBALANCE" path="/pages/product/AccountBalanceAddUpdate.jsp"/>
+		</action>
+	
+		<action path="/saveAddAccountBalance" 
+		    parameter="webaction"
+	        type="com.hsbc.gpb.sil.message.web.struts.action.AccountBalanceAction"
+	        scope="request" 
+	        name="accountBalanceForm" 
+	        validate="false">
+	  	    <forward name="LIST_ACCOUNTBALANCE" path="/listAccountBalance.do?webaction=list"/>
+		</action>
+	
+		<action path="/showUpdateAccountBalance" 
+	   	    parameter="webaction"
+	        type="com.hsbc.gpb.sil.message.web.struts.action.AccountBalanceAction"
+	        scope="request" 
+	        name="accountBalanceForm" 
+	        validate="false">
+	  	    <forward name="SHOW_UPDATE_ACCOUNTBALANCE" path="/pages/product/AccountBalanceAddUpdate.jsp"/>
+		</action>
+	
+		<action path="/saveUpdateAccountBalance" 
+		    parameter="webaction"
+	        type="com.hsbc.gpb.sil.message.web.struts.action.AccountBalanceAction"
+	        scope="request" 
+	        name="accountBalanceForm" 
+	        validate="false">
+	  	    <forward name="LIST_ACCOUNTBALANCE" path="/listAccountBalance.do?webaction=list"/>
+		</action>
+	
+		<action path="/deleteAccountBalance" 
+		    parameter="webaction"
+	        type="com.hsbc.gpb.sil.message.web.struts.action.AccountBalanceAction"
+	        scope="request" 
+	        name="accountBalanceForm" 
+	        validate="false">
+	  	    <forward name="LIST_ACCOUNTBALANCE" path="/listAccountBalance.do?webaction=list"/>
+		</action>
+	
+		<action path="/viewAccountBalance" 
+		    parameter="webaction"
+		    type="com.hsbc.gpb.sil.message.web.struts.action.AccountBalanceAction"
+		    scope="request" 
+		    name="accountBalanceForm" 
+		    validate="false">
+		    <forward name="VIEW_ACCOUNTBALANCE" path="/pages/product/AccountBalanceView.jsp"/>
+		</action>
+		<action path="/searchAccountBalance" 
+			parameter="webaction"
+			type="com.hsbc.gpb.sil.message.web.struts.action.AccountBalanceAction"
+			scope="request" 
+			name="accountBalanceForm" 
+			validate="false">
+      			<forward name="LIST_ACCOUNTBALANCE" path="/pages/product/AccountBalanceList.jsp"/>
+		</action>
+		<action path="/listAccountBalance" 
+		        parameter="webaction"
+		        type="com.hsbc.gpb.sil.message.web.struts.action.AccountBalanceAction"
+		        scope="request" 
+		        name="accountBalanceForm" 
+		        validate="false">
+	  	    <forward name="LIST_ACCOUNTBALANCE" path="/pages/product/AccountBalanceList.jsp"/>
+				    </action>
+		
+	</action-mappings>
+  
+    <!-- ========== Associated Messages Resource settings =================== -->
+    <!-- Not used by tiles or this website, but needed due to a bug in actual Struts version -->
+    <message-resources parameter="org.apache.struts.webapp.tiles.dev1-1.ApplicationResources" null="false" />
+
+    <message-resources key="product" 
+    	parameter="com.hsbc.gpb.sil.message.web.struts.message.MessageResources"
+        null="false" />
+
+    <plug-in className="org.springframework.web.struts.ContextLoaderPlugIn"></plug-in>
+    
+    <plug-in className="org.apache.struts.tiles.TilesPlugin" >
+        <set-property property="definitions-config" value="/WEB-INF/tileDefinitions.xml" />
+        <set-property property="moduleAware" value="true" />
+    </plug-in>
+    
+    <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+        <set-property property="pathnames"
+            value="/WEB-INF/config/struts/validator/validator-rules.xml,
+ 	               /WEB-INF/config/struts/validator/validation.xml" />
+    </plug-in>
+</struts-config>
